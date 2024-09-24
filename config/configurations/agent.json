@@ -1,0 +1,8 @@
+[
+    {
+        "name": "starter",
+        "system_instruction": "Answer consistently",
+        "llm": null,
+        "custom_response": null
+    }
+]

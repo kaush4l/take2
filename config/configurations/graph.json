@@ -1,0 +1,10 @@
+[
+    {
+        "startKey": "__start__",
+        "endKey": "starter"
+    },
+    {
+        "startKey": "starter",
+        "endKey": "__end__"
+    }
+]
