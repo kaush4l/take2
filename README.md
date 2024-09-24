@@ -1,6 +1,7 @@
 # take2
 
 Overview
+
 take2 is a Python-based tool that simplifies the creation of LangChain applications by allowing users to define agent nodes, graphs, and edges using JSON configuration files. This project aims to streamline the process of building and maintaining LangGraph workflows by eliminating the need for extensive manual coding.
 
 ### TODO
