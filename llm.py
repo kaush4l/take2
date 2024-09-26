@@ -3,7 +3,6 @@ set_verbose(True)
 
 from langchain_ollama.chat_models import ChatOllama
 llm = ChatOllama(
-    # model="llama3.1:8b-instruct-q8_0",
-    model="llama3.1:8b-instruct-q6_K",
+    model="llama3.2:3b-instruct-fp16",
     # temperature=0.1,
 )

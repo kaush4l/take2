@@ -1,0 +1,33 @@
+{
+    "Agent": [
+        {
+            "name": "Tester",
+            "system_instruction": "You are an assistant",
+            "llm": null,
+            "custom_response": null,
+            "setting": null
+        }
+    ],
+    "Node": [
+        {
+            "id": "Starter",
+            "input_value": "messages",
+            "agent": "Tester"
+        }
+    ],
+    "Graph": [
+        {
+            "startKey": "__start__",
+            "endKey": "Starter"
+        },
+        {
+            "startKey": "Starter",
+            "endKey": "__end__"
+        }
+    ],
+    "State": [
+        {
+            "messages": []
+        }
+    ]
+}
