@@ -19,6 +19,7 @@ class Node(BaseModel):
     output_data_type: Optional[str] = None
 
 class Edge(BaseModel):
+    name: str
     startKey: str
     endKey: str
 

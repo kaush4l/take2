@@ -14,8 +14,8 @@ def create_empty_skeleton():
     node = Node(name="starter",
                 input_value="messages",
                 agent="Tester")
-    edge_1 = Edge(startKey="__start__", endKey="starter")
-    edge_2 = Edge(startKey="starter", endKey="__end__")
+    edge_1 = Edge(name="e1", startKey="__start__", endKey="starter")
+    edge_2 = Edge(name="e2", startKey="starter", endKey="__end__")
     state = State(messages=[])
     skeleton = LangGraphConfig(agents=[agent], nodes=[node], edges=[edge_1, edge_2], state=state)
     with open(FILE, "w", encoding="utf-8") as f:

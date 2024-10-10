@@ -18,10 +18,12 @@
     ],
     "edges": [
         {
+            "name" : "e1",
             "startKey": "__start__",
             "endKey": "starter"
         },
         {
+            "name" : "e2",
             "startKey": "starter",
             "endKey": "__end__"
         }
