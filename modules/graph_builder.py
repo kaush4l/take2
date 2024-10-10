@@ -1,17 +1,15 @@
 from typing import List
 
 from config.loader import load_configs
-from modules.models import Agent, Node, Graph, State, Modules
+from modules.models import Agent, Edge, LangGraphConfig, Node, State
 
 
 def load_data():
-    # for front end use
     configs = load_configs()
-    state = configs[State.__name__][0]
-    # for backend use
-    agents = build_agents(configs[Agent.__name__])
-    nodes = build_nodes(configs[Node.__name__], agents)
-    graph = build_graph(configs[Graph.__name__], nodes, state)
+    state = configs.state
+    agents = build_agents(configs.agents)
+    nodes = build_nodes(configs.nodes, agents)
+    graph = build_graph(configs.edges, nodes, state)
     return configs, graph
 
 
@@ -35,10 +33,10 @@ def build_nodes(nodes: list[Node], agents):
             agent = agents[node.agent]
             response = llm.invoke(agent.invoke(query))
             return { "messages" : response }
-        constructed_nodes[node.id] = node_function
+        constructed_nodes[node.name] = node_function
     return constructed_nodes
 
-def build_graph(graph: list[Graph], nodes, state):
+def build_graph(graph: list[Edge], nodes, state):
     from langgraph.graph import StateGraph
     graph_builder = StateGraph(state.__class__)
     for node in nodes:

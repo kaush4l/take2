@@ -5,7 +5,6 @@ from typing import List, Dict, Any, Optional
 class State(BaseModel):
     messages: List[str]
 
-
 class Agent(BaseModel):
     name: str
     system_instruction: str
@@ -13,28 +12,18 @@ class Agent(BaseModel):
     custom_response: Optional[str] = None
     setting: Optional[List[str]] = None
 
-
 class Node(BaseModel):
-    id: str
+    name: str
     input_value: str
     agent: str
     output_data_type: Optional[str] = None
 
-
-class Graph(BaseModel):
+class Edge(BaseModel):
     startKey: str
     endKey: str
 
-
-def get_primary(model: BaseModel):
-    if model.__class__ == Agent:
-        return model.name
-    elif model.__class__ == Node:
-        return model.id
-    elif model.__class__ == Graph:
-        return model.startKey
-    if model.__class__ == State:
-        return model.messages
-
-
-Modules = [Agent, Node, Graph, State]
+class LangGraphConfig(BaseModel):
+    agents: List[Agent] = [None]
+    nodes: List[Node] = [None]
+    edges: List[Edge] = [None]
+    state: State = None

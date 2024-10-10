@@ -1,39 +1,35 @@
-from modules.graph_builder import load_data
-from modules.models import get_primary
 import gradio as gr
+from modules.graph_builder import load_data
+from modules.models import LangGraphConfig
 
-def create_interface():
-
-    configs, graph = load_data()
-
+def create_interface(configs: LangGraphConfig):
     with gr.Blocks() as interface:
         gr.Markdown("LangGraph Interface")
         with gr.Tabs():
-            for model in configs:
+            for model in configs.model_fields:
                 with gr.Tab(model):
                     gr.Markdown(f"## {model} Information")
-                    for item in configs[model]:
-                        with gr.Accordion(f"{get_primary(item)}", open=False):
+                    items = getattr(configs, model)
+                    if isinstance(items, list):
+                        for item in items:
+                            with gr.Accordion(f"{item}", open=False):
+                                # gr.Markdown(f"{model}")
+                                for attribute in item.model_fields:
+                                    gr.Markdown(f"{attribute} : {getattr(item, attribute)}")
+                    else:
+                        with gr.Accordion(f"{items}", open=False):
                             # gr.Markdown(f"{model}")
-                            for attribute in item.__fields__:
-                                gr.Markdown(f"{attribute} : {getattr(item, attribute)}")
+                            for attribute in items.model_fields:
+                                gr.Markdown(f"{attribute}")
 
     return interface
 
 
 
 def main():
-    graph = load_data()
-
-    demo = create_interface()
+    config, graph = load_data()
+    demo = create_interface(config)
     demo.launch(server_name="0.0.0.0", server_port=5000)
-    # graph = build_graph()
-    # while True:
-    #     user_input = input("User: ")
-    #     result = graph.invoke({
-    #         "messages": ["user", user_input]
-    #     })
-    #     print(result)
 
 if __name__ == "__main__":
     main()

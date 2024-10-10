@@ -1,0 +1,32 @@
+{
+    "agents": [
+        {
+            "name": "Tester",
+            "system_instruction": "You are an assistant",
+            "llm": null,
+            "custom_response": null,
+            "setting": null
+        }
+    ],
+    "nodes": [
+        {
+            "name": "starter",
+            "input_value": "messages",
+            "agent": "Tester",
+            "output_data_type": null
+        }
+    ],
+    "edges": [
+        {
+            "startKey": "__start__",
+            "endKey": "starter"
+        },
+        {
+            "startKey": "starter",
+            "endKey": "__end__"
+        }
+    ],
+    "state": {
+        "messages": []
+    }
+}
