@@ -1,52 +1,55 @@
 from config.loader import load_configs
-from modules.models import LangGraphConfig, Agent, Edge, Node, ConditionalNode, AgentState
+from modules.models import PromptTemplate, Edge, Models, Node, ConditionalNode, AgentState
 
 def load_data():
     configs = load_configs()
-    # validate_graph(configs)
-    agents = build_agents(configs.agents)
-    nodes = build_nodes(configs.nodes, agents)
+    models = build_model(configs.models)
+    prompts = build_prompts(configs.prompts)
+    nodes = build_nodes(configs.nodes, prompts, models, configs.state)
     graph = build_graph(configs.edges, nodes, configs.state)
     return configs, graph
 
-def validate_graph(config: LangGraphConfig):
-    agent_names = {agent.name for agent in config.agents}
-    node_names = {node.name for node in config.nodes}
-    for node in config.nodes:
-        if node.agent not in agent_names:
-            raise ValueError(f"Agent '{node.agent}' in Node '{node.name}' is not defined.")
-    for edge in config.edges:
-        if edge.startKey not in node_names and edge.startKey != "__start__":
-            raise ValueError(f"Edge '{edge.name}' starts with undefined node '{edge.startKey}'.")
-        if edge.endKey not in node_names and edge.endKey != "__end__":
-            raise ValueError(f"Edge '{edge.name}' ends with undefined node '{edge.endKey}'.")
+def build_model(models: list[Models]):
+    constructed_models = {}
 
-def build_agents(agents: list[Agent]):
-    from langchain_core.prompts import ChatPromptTemplate
+    # TODO add loading based on providers
+    for model in models:
+        from langchain_ollama.chat_models import ChatOllama
+        llm = ChatOllama(
+            model=model.key,
+        )
+        constructed_models[model.name] = llm
+    return constructed_models
+
+def build_prompts(prompts: list[PromptTemplate]):
     constructed_agents = {}
-    for agent in agents:
-        prompt = ChatPromptTemplate([
-            ("system", agent.system_instruction),
+
+    from langchain_core.prompts import ChatPromptTemplate
+    for prompt in prompts:
+        template = ChatPromptTemplate.from_messages([
+            ("system", prompt.system_instruction),
             ("user", "{query}"),
         ])
-        constructed_agents[agent.name] = prompt
+        constructed_agents[prompt.name] = template
     return constructed_agents
 
-def build_nodes(nodes: list[Node], agents):
-    from llm import llm
+def build_nodes(nodes: list[Node], prompts, models, state):
     constructed_nodes = {}
 
     def node_function(node: Node, state: AgentState):
-        query = state.get_element(node.input_value)
-        if query is None:
-            raise AttributeError(f"State has no attribute '{node.input_value}'")
-        agent = agents[node.agent]
-        response = llm.invoke(agent.invoke(query))
-        state.add_element('response', response)  # Assuming updating response attribute here
-        return state
+        def function(state: AgentState):
+            input = getattr(state, node.input_key)
+            prompt = prompts[node.prompt].invoke(input)
+            response = models[node.model].invoke(prompt)
+            attribute = getattr(state, node.output_key)
+            return {
+                attribute : response,
+                **state
+            }
+        return function
 
     for node in nodes:
-        constructed_nodes[node.name] = (lambda state, node=node: node_function(node, state))
+        constructed_nodes[node.name] = node_function(node, state)
 
     return constructed_nodes
 

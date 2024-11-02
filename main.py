@@ -1,11 +1,10 @@
-import asyncio
 import gradio as gr
 from modules.graph_builder import load_data
 
 configs, graph = load_data()
 
 def chat_response(user_input):
-    response = graph.invoke({"messages": ("user", user_input)})
+    response = graph.invoke({"query": user_input})
     return response
 
 def create_editable_field(attribute_value, attribute_label):
@@ -36,7 +35,7 @@ def create_interface():
                                 update_button = gr.Button(value="Update Item")
                     elif items is not None:
                         with gr.Accordion(f"{getattr(items, 'name', 'Items')}", open=False):
-                            for attribute in items.__fields__.keys():
+                            for attribute in items.model_extra.keys():
                                 attribute_value = getattr(items, attribute)
                                 setattr(items, attribute, create_editable_field(attribute_value, f"{attribute}"))
                             update_button = gr.Button(value="Update Item")
@@ -45,7 +44,7 @@ def create_interface():
                 user_input = gr.Textbox(lines=5, label="User Input")
                 submit = gr.Button(value="Submit")
                 chat_output = gr.Textbox(lines=5, label="Chat Output")
-                submit.click(lambda x: chat_response(x), inputs=user_input, outputs=chat_output)
+                submit.click(chat_response, inputs=user_input, outputs=chat_output)
 
     return interface
 

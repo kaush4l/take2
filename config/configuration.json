@@ -1,35 +1,43 @@
 {
-    "agents": [
+    "prompts": [
         {
-            "name": "Tester",
+            "name": "Basic",
             "system_instruction": "You are an assistant",
-            "llm": null,
             "custom_response": null,
             "setting": null
         }
     ],
-    "nodes": [
+    "models": [
         {
-            "name": "starter",
-            "input_value": "messages",
-            "agent": "Tester",
-            "output_data_type": null
+            "name": "llama",
+            "key": "llama3.2:3b-instruct-fp16",
+            "provider": "ollama"
         }
     ],
     "edges": [
         {
-            "name" : "e1",
+            "name": "e1",
             "startKey": "__start__",
-            "endKey": "starter"
+            "endKey": "n1"
         },
         {
-            "name" : "e2",
-            "startKey": "starter",
+            "name": "e2",
+            "startKey": "n1",
             "endKey": "__end__"
         }
     ],
+    "nodes": [
+        {
+            "name": "n1",
+            "input_key": "query",
+            "model": "llama",
+            "prompt": "Basic",
+            "output_key": "response",
+            "output_data_type": null
+        }
+    ],
     "state": {
-        "messages": [],
-        "query": ""
+        "query": "",
+        "response": ""
     }
 }
