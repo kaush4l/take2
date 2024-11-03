@@ -11,26 +11,10 @@ class AgentState(BaseModel):
     def __init__(self, **data: Any):
         super().__init__(**data)
 
-        user_dict = {k: v for k, v in data.items()}
-        for key, value in user_dict.items():
+        for key, value in data.items():
+            self.__annotations__[key] = type(value)
             setattr(self, key, value)
-            # if value is None:
-            #     if isinstance(value, int):
-            #         setattr(self, key, 0)
-            #     elif isinstance(value, float):
-            #         setattr(self, key, 0.0)
-            #     elif isinstance(value, str):
-            #         setattr(self, key, "")
-            #     elif isinstance(value, bool):
-            #         setattr(self, key, False)
-            #     elif isinstance(value, list):
-            #         setattr(self, key, [])
-            #     elif isinstance(value, dict):
-            #         setattr(self, key, {})
-            #     else:
-            #         setattr(self, key, None)
-            # else:
-            #     setattr(self, key, value)
+            self.__fields__[key] = Field(default=value)
 
 class Models(BaseModel):
     """Holds the LLM's models and settings"""

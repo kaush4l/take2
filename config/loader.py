@@ -6,13 +6,13 @@ from modules.models import LangGraphConfig, PromptTemplate, Edge, Models, Node, 
 FILE = "config/configuration.json"
 
 def create_empty_skeleton():
-    prompts = PromptTemplate(name="Basic",
+    prompts = PromptTemplate(name="basic",
                              system_instruction="You are an assistant")
     node = Node(name="n1",
                 input_key="query",
                 model="llama",
                 output_key="response",
-                prompt="Basic")
+                prompt="basic")
     edge_1 = Edge(name="e1",
                   startKey="__start__",
                   endKey="n1")
@@ -22,7 +22,7 @@ def create_empty_skeleton():
     model_1 = Models(name="llama",
                      key="llama3.2:3b-instruct-fp16",
                      provider="ollama")
-    state = AgentState(query="",
+    state = AgentState(query="What is cinematography",
                        response="")
     skeleton = LangGraphConfig(
         edges=[edge_1, edge_2],

@@ -37,14 +37,18 @@ def build_nodes(nodes: list[Node], prompts, models, state):
     constructed_nodes = {}
 
     def node_function(node: Node, state: AgentState):
+        input_key = node.input_key
+        template = prompts[node.prompt]
+        llm = models[node.model]
+        response_key = node.output_key
         def function(state: AgentState):
-            input = getattr(state, node.input_key)
-            prompt = prompts[node.prompt].invoke(input)
-            response = models[node.model].invoke(prompt)
-            attribute = getattr(state, node.output_key)
+            query = getattr(state, input_key)
+            prompt = template.invoke(query)
+            response = llm.invoke(prompt)
             return {
-                attribute : response,
-                **state
+                **state.dict(),
+                response_key : response
+
             }
         return function
 
@@ -55,6 +59,7 @@ def build_nodes(nodes: list[Node], prompts, models, state):
 
 def build_graph(edges: list[Edge], nodes, state: AgentState):
     from langgraph.graph import StateGraph
+    state = state.copy()
     graph_builder = StateGraph(state.__class__)
     for node_name, node_function in nodes.items():
         graph_builder.add_node(node_name, node_function)
