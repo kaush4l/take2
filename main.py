@@ -4,8 +4,8 @@ from modules.graph_builder import load_data
 configs, graph = load_data()
 
 def chat_response(user_input):
-    response = graph.invoke({"query": user_input})
-    return response
+    result = graph.invoke({"query": user_input})
+    return result['response']
 
 def create_editable_field(attribute_value, attribute_label):
     if isinstance(attribute_value, str):
@@ -40,7 +40,7 @@ def create_interface():
                                 setattr(items, attribute, create_editable_field(attribute_value, f"{attribute}"))
                             update_button = gr.Button(value="Update Item")
             with gr.Tab("Chat"):
-                gr.Markdown(f"Chat arena")
+                gr.Markdown(f"## Chat arena")
                 user_input = gr.Textbox(lines=5, label="User Input")
                 submit = gr.Button(value="Submit")
                 chat_output = gr.Textbox(lines=5, label="Chat Output")

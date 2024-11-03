@@ -1,7 +1,7 @@
 import json
 import os
 from pydantic import parse_obj_as
-from modules.models import LangGraphConfig, PromptTemplate, Edge, Models, Node, AgentState
+from modules.base import LangGraphConfig, PromptTemplate, Edge, Model, Node, AgentState
 
 FILE = "config/configuration.json"
 
@@ -19,17 +19,17 @@ def create_empty_skeleton():
     edge_2 = Edge(name="e2",
                   startKey="n1",
                   endKey="__end__")
-    model_1 = Models(name="llama",
-                     key="llama3.2:3b-instruct-fp16",
-                     provider="ollama")
+    model_1 = Model(name="llama",
+                    key="llama3.2:3b-instruct-fp16",
+                    provider="ollama")
     state = AgentState(query="What is cinematography",
                        response="")
     skeleton = LangGraphConfig(
-        edges=[edge_1, edge_2],
-        models=[model_1],
-        nodes=[node],
-        prompts=[prompts],
-        state=state)
+        Edges=[edge_1, edge_2],
+        Models=[model_1],
+        Nodes=[node],
+        Prompts=[prompts],
+        State=state)
     save_configs(skeleton)
     return skeleton
 

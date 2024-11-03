@@ -1,15 +1,15 @@
 from config.loader import load_configs
-from modules.models import PromptTemplate, Edge, Models, Node, ConditionalNode, AgentState
+from modules.base import PromptTemplate, Edge, Model, Node, ConditionalNode, AgentState
 
 def load_data():
     configs = load_configs()
-    models = build_model(configs.models)
-    prompts = build_prompts(configs.prompts)
-    nodes = build_nodes(configs.nodes, prompts, models, configs.state)
-    graph = build_graph(configs.edges, nodes, configs.state)
+    models = build_model(configs.Models)
+    prompts = build_prompts(configs.Prompts)
+    nodes = build_nodes(configs.Nodes, prompts, models, configs.State)
+    graph = build_graph(configs.Edges, nodes, configs.State)
     return configs, graph
 
-def build_model(models: list[Models]):
+def build_model(models: list[Model]):
     constructed_models = {}
 
     # TODO add loading based on providers
@@ -59,7 +59,6 @@ def build_nodes(nodes: list[Node], prompts, models, state):
 
 def build_graph(edges: list[Edge], nodes, state: AgentState):
     from langgraph.graph import StateGraph
-    state = state.copy()
     graph_builder = StateGraph(state.__class__)
     for node_name, node_function in nodes.items():
         graph_builder.add_node(node_name, node_function)
